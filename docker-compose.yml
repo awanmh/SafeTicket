@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: safeticket-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: safeticket
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  k6:
+    image: grafana/k6:latest
+    container_name: safeticket-k6
+    volumes:
+      - ./k6-script.js:/script.js
+    command: run /script.js
+    depends_on:
+      - app # Wait for app to be ready (if running app in docker)
+    profiles: ["tools"] # Don't start by default
+
+  # Optional: Run app in docker
+  app:
+    build: .
+    container_name: safeticket-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: safeticket
+      DB_PORT: 5432
+    depends_on:
+      - db
+    profiles: ["app"]
