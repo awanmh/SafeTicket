@@ -64,7 +64,7 @@ k6 run --vus 50 --iterations 50 -e MODE=safe k6-script.js
 
 > **Proof that locking mechanism prevents overselling under high load.**
 >
-> ![Proof of Safe Mode](https://place-holder.png "Screenshot of K6 Result showing 1 success and rest failures") > _(Replace this placeholder with actual screenshot if available)_
+> ![Proof of Safe Mode](Screenshot_k6.png)
 
 ## Manual Run (Without Docker)
 
